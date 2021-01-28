@@ -14,9 +14,10 @@ import (
 	"golang.org/x/text/transform"
 )
 
-func Fetch(url string, f func(string, string, io.Reader) (*http.Request, error)) ([]byte, error) {
+// var rateLimiter = time.Tick(10 * time.Millisecond)
 
-	client := &http.Client{}
+func Fetch(url string, f func(string, string, io.Reader) (*http.Request, error)) ([]byte, error) {
+	// <-rateLimiter
 
 	if f == nil {
 		f = http.NewRequest
@@ -26,6 +27,7 @@ func Fetch(url string, f func(string, string, io.Reader) (*http.Request, error))
 		return nil, err
 	}
 
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

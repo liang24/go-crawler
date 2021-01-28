@@ -10,17 +10,22 @@ import (
 	"github.com/liang24/go-crawler/model"
 )
 
-var desRe = regexp.MustCompile(`<div class="des f-cl"[^>]*>\S+ \| (?P<Age>\d+)岁 \| (?P<Education>\S+) \| (?P<Marriage>\S+) \| (?P<Height>\d+)cm \| (?P<Income>[^<]+)</div>`)
-var nameRe = regexp.MustCompile(`<span class="nickName"[^>]*>([^<]+)</span>`)
-var carRe = regexp.MustCompile(`<div class="m-btn pink"[^>]*>(\S+车)</div>`)
-var houseRe = regexp.MustCompile(`<div class="m-btn pink"[^>]*>(\S+房)</div>`)
-var hokouRe = regexp.MustCompile(`<div class="m-btn pink"[^>]*>籍贯:([^<]+)</div>`)
-var xinzouRe = regexp.MustCompile(`<div class="m-btn purple"[^>]*>([^<]+座)\(\d+\.\d+-\d+\.\d+\)</div>`)
-var weightRe = regexp.MustCompile(`<div class="m-btn purple"[^>]*>(\d+)kg</div>`)
+var (
+	desRe    = regexp.MustCompile(`<div class="des f-cl"[^>]*>\S+ \| (?P<Age>\d+)岁 \| (?P<Education>\S+) \| (?P<Marriage>\S+) \| (?P<Height>\d+)cm \| (?P<Income>[^<]+)</div>`)
+	nameRe   = regexp.MustCompile(`<span class="nickName"[^>]*>([^<]+)</span>`)
+	carRe    = regexp.MustCompile(`<div class="m-btn pink"[^>]*>(\S+车)</div>`)
+	houseRe  = regexp.MustCompile(`<div class="m-btn pink"[^>]*>(\S+房)</div>`)
+	hokouRe  = regexp.MustCompile(`<div class="m-btn pink"[^>]*>籍贯:([^<]+)</div>`)
+	xinzouRe = regexp.MustCompile(`<div class="m-btn purple"[^>]*>([^<]+座)\(\d+\.\d+-\d+\.\d+\)</div>`)
+	weightRe = regexp.MustCompile(`<div class="m-btn purple"[^>]*>(\d+)kg</div>`)
+	idRe     = regexp.MustCompile(`https://album.zhenai.com/u/(\d+)`)
+)
 
-func ParseProfile(contents []byte) engine.ParseResult {
+func ParseProfile(contents []byte, gender string, url string) engine.ParseResult {
 	var match [][]byte
 	profile := model.Profile{}
+
+	profile.Gender = gender
 
 	// Name（昵称）
 	profile.Name = extractString(contents, nameRe)

@@ -14,14 +14,14 @@ func TestParseProfile(t *testing.T) {
 		panic(err)
 	}
 
-	result := ParseProfile(contents)
+	result := ParseProfile(contents, "男", "https://album.zhenai.com/u/1715998969")
 
 	expected := model.Profile{
 		Name:      "梦的解析",
-		Gender:    "",
+		Gender:    "男",
 		Age:       23,
 		Height:    162,
-		Weight:    70,
+		Weight:    0,
 		Income:    "5001-8000元",
 		Marriage:  "未婚",
 		Education: "大学本科",
