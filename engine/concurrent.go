@@ -1,14 +1,9 @@
 package engine
 
-import (
-	"log"
-
-	"github.com/liang24/go-crawler/model"
-)
-
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
+	ItemSaver   chan Item
 }
 
 type Scheduler interface {
@@ -34,14 +29,10 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		e.Scheduler.Submit(r)
 	}
 
-	itemCount := 0
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			if _, ok := item.(model.Profile); ok {
-				log.Printf("Got item #%d: %v\n", itemCount, item)
-				itemCount++
-			}
+			go func(i Item) { e.ItemSaver <- i }(item)
 		}
 
 		for _, request := range result.Requests {

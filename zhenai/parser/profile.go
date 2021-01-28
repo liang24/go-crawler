@@ -58,13 +58,22 @@ func ParseProfile(contents []byte, gender string, url string) engine.ParseResult
 	// Xinzou
 	profile.Xinzuo = extractString(contents, xinzouRe)
 
+	id := extractString([]byte(url), idRe)
+
 	// Weight
 	if weight, err := strconv.Atoi(extractString(contents, weightRe)); err != nil {
 		profile.Weight = weight
 	}
 
 	result := engine.ParseResult{
-		Items: []interface{}{profile},
+		Items: []engine.Item{
+			{
+				Url:     url,
+				Id:      id,
+				Type:    "zhenai",
+				Payload: profile,
+			},
+		},
 	}
 
 	return result

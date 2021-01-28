@@ -1,11 +1,13 @@
 package parser
 
 import (
+	"context"
 	"regexp"
 	"strings"
 
 	"github.com/liang24/go-crawler/engine"
 	"github.com/liang24/go-crawler/zhenai/factory"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 var (
@@ -13,6 +15,18 @@ var (
 	genderRe  = regexp.MustCompile(`<td width="180"><span class="grayL">性别：</span>([^<]+)</td>`)
 	cityUrlRe = regexp.MustCompile(`<a href="(http://www.zhenai.com/zhenghun/[^"]+)">下一页</a>`)
 )
+
+var client *elastic.Client
+
+func init() {
+	var err error
+	client, err = elastic.NewClient(
+		// Must turn off sniff in docker
+		elastic.SetSniff(false))
+	if err != nil {
+		panic(err)
+	}
+}
 
 func ParseCity(contents []byte, _ string) engine.ParseResult {
 	profileMatches := profileRe.FindAllSubmatch(contents, -1)
@@ -24,6 +38,16 @@ func ParseCity(contents []byte, _ string) engine.ParseResult {
 		gender := string(genderMatches[i][1])
 
 		url := strings.Replace(string(profile[1]), "http:", "https:", 1)
+		id := extractString([]byte(url), idRe)
+
+		_, err := client.Get().
+			Index("dating_profile").
+			Type("zhenai").
+			Id(id).
+			Do(context.Background())
+		if err == nil { //表示存在
+			continue
+		}
 
 		result.Requests = append(result.Requests, engine.Request{
 			Url:                url,
