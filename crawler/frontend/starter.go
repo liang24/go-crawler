@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/liang24/go-crawler/frontend/controller"
+	"github.com/liang24/go-crawler/crawler/frontend/controller"
 )
 
 func main() {

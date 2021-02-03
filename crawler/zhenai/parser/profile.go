@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/liang24/go-crawler/engine"
-	"github.com/liang24/go-crawler/model"
+	"github.com/liang24/go-crawler/crawler/engine"
+	"github.com/liang24/go-crawler/crawler/model"
 )
 
 var (
@@ -21,7 +21,7 @@ var (
 	idRe     = regexp.MustCompile(`https://album.zhenai.com/u/(\d+)`)
 )
 
-func ParseProfile(contents []byte, gender string, url string) engine.ParseResult {
+func parseProfile(contents []byte, url string, gender string) engine.ParseResult {
 	var match [][]byte
 	profile := model.Profile{}
 

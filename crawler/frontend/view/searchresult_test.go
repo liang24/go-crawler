@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/liang24/go-crawler/engine"
-	"github.com/liang24/go-crawler/frontend/model"
-	common "github.com/liang24/go-crawler/model"
+	"github.com/liang24/go-crawler/crawler/engine"
+	"github.com/liang24/go-crawler/crawler/frontend/model"
+	common "github.com/liang24/go-crawler/crawler/model"
 )
 
 func TestSearchResultView_Render(t *testing.T) {

@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/liang24/go-crawler/engine"
-	"github.com/liang24/go-crawler/frontend/model"
-	"github.com/liang24/go-crawler/frontend/view"
+	"github.com/liang24/go-crawler/crawler/engine"
+	"github.com/liang24/go-crawler/crawler/frontend/model"
+	"github.com/liang24/go-crawler/crawler/frontend/view"
 	"gopkg.in/olivere/elastic.v5"
 )
 

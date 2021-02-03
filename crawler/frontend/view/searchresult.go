@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"io"
 
-	"github.com/liang24/go-crawler/frontend/model"
+	"github.com/liang24/go-crawler/crawler/frontend/model"
 )
 
 type SearchResultView struct {

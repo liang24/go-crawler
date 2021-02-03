@@ -7,17 +7,20 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/liang24/go-crawler/crawler_distributed/config"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
 
-// var rateLimiter = time.Tick(10 * time.Millisecond)
+var rateLimiter = time.Tick(time.Second / config.Qps)
 
 func Fetch(url string, f func(string, string, io.Reader) (*http.Request, error)) ([]byte, error) {
-	// <-rateLimiter
+	<-rateLimiter
+	log.Printf("Fetching url %s", url)
 
 	if f == nil {
 		f = http.NewRequest

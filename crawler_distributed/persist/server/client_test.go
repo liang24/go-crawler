@@ -1,23 +1,29 @@
-package parser
+package main
 
 import (
-	"io/ioutil"
 	"testing"
+	"time"
 
 	"github.com/liang24/go-crawler/crawler/engine"
 	"github.com/liang24/go-crawler/crawler/model"
+	"github.com/liang24/go-crawler/crawler_distributed/rpcsupport"
 )
 
-func TestParseProfile(t *testing.T) {
-	contents, err := ioutil.ReadFile("profile_text_data.html")
+func TestItemSaver(t *testing.T) {
+	const host = ":1234"
 
+	// start ItemSaverServer
+	go serveRpc(host, "test1")
+	time.Sleep(time.Second)
+
+	// start ItemSaverClient
+	client, err := rpcsupport.NewClient(host)
 	if err != nil {
 		panic(err)
 	}
 
-	result := parseProfile(contents, "https://album.zhenai.com/u/1715998969", "男")
-
-	expected := engine.Item{
+	// Call save
+	item := engine.Item{
 		Url:  "https://album.zhenai.com/u/1715998969",
 		Type: "zhenai",
 		Id:   "1715998969",
@@ -37,9 +43,10 @@ func TestParseProfile(t *testing.T) {
 		},
 	}
 
-	actual := result.Items[0]
+	result := ""
+	err = client.Call("ItemSaverService.Save", item, &result)
 
-	if expected != actual {
-		t.Errorf("expected: %v; but was %v", expected, actual)
+	if err != nil || result != "ok" {
+		t.Errorf("result: %s; err: %s", result, err)
 	}
 }

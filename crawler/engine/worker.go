@@ -3,10 +3,10 @@ package engine
 import (
 	"log"
 
-	"github.com/liang24/go-crawler/fetcher"
+	"github.com/liang24/go-crawler/crawler/fetcher"
 )
 
-func worker(r Request) (ParseResult, error) {
+func Worker(r Request) (ParseResult, error) {
 	log.Printf("Fetching %s", r.Url)
 	body, err := fetcher.Fetch(r.Url, r.NewHttpRequestFunc)
 	if err != nil {
@@ -14,5 +14,5 @@ func worker(r Request) (ParseResult, error) {
 		return ParseResult{}, err
 	}
 
-	return r.ParserFunc(body, r.Url), nil
+	return r.Parser.Parse(body, r.Url), nil
 }

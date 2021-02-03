@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/liang24/go-crawler/engine"
-	"github.com/liang24/go-crawler/model"
+	"github.com/liang24/go-crawler/crawler/engine"
+	"github.com/liang24/go-crawler/crawler/model"
 	"gopkg.in/olivere/elastic.v5"
 )
 
@@ -38,7 +38,7 @@ func TestSave(t *testing.T) {
 		panic(err)
 	}
 
-	err = save(client, "dating_profile", expected)
+	err = Save(client, "dating_profile", expected)
 	if err != nil {
 		panic(err)
 	}

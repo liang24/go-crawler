@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/liang24/go-crawler/engine"
-	"github.com/liang24/go-crawler/persist"
-	"github.com/liang24/go-crawler/scheduler"
-	"github.com/liang24/go-crawler/zhenai/parser"
+	"github.com/liang24/go-crawler/crawler/engine"
+	"github.com/liang24/go-crawler/crawler/persist"
+	"github.com/liang24/go-crawler/crawler/scheduler"
+	"github.com/liang24/go-crawler/crawler/zhenai/parser"
 )
 
 func main() {
@@ -14,13 +14,14 @@ func main() {
 	}
 
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.ConcurrentScheduler{},
-		WorkerCount: 20,
-		ItemSaver:   itemChan,
+		Scheduler:        &scheduler.ConcurrentScheduler{},
+		WorkerCount:      20,
+		ItemChan:         itemChan,
+		RequestProcessor: engine.Worker,
 	}
 
 	e.Run(engine.Request{
-		Url:        "http://www.zhenai.com/zhenghun",
-		ParserFunc: parser.ParseCityList,
+		Url:    "http://www.zhenai.com/zhenghun",
+		Parser: engine.NewFuncParser(parser.ParseCityList, "ParseCityList"),
 	})
 }
