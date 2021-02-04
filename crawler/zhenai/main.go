@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/liang24/go-crawler/crawler/duplicate"
 	"github.com/liang24/go-crawler/crawler/engine"
 	"github.com/liang24/go-crawler/crawler/persist"
 	"github.com/liang24/go-crawler/crawler/scheduler"
@@ -13,11 +14,14 @@ func main() {
 		panic(err)
 	}
 
+	duplicator := duplicate.NewRedisDuplicator("127.0.0.1:6379", "")
+
 	e := engine.ConcurrentEngine{
-		Scheduler:        &scheduler.ConcurrentScheduler{},
-		WorkerCount:      20,
-		ItemChan:         itemChan,
-		RequestProcessor: engine.Worker,
+		Scheduler:         &scheduler.ConcurrentScheduler{},
+		WorkerCount:       20,
+		ItemChan:          itemChan,
+		RequestProcessor:  engine.Worker,
+		RequestDuplicator: duplicator,
 	}
 
 	e.Run(engine.Request{

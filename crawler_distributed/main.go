@@ -6,6 +6,7 @@ import (
 	"net/rpc"
 	"strings"
 
+	"github.com/liang24/go-crawler/crawler/duplicate"
 	"github.com/liang24/go-crawler/crawler/engine"
 	"github.com/liang24/go-crawler/crawler/scheduler"
 	"github.com/liang24/go-crawler/crawler/zhenai/parser"
@@ -33,11 +34,14 @@ func main() {
 
 	processor := worker.CreateProcessor(pool)
 
+	duplicator := duplicate.NewRedisDuplicator("127.0.0.1:6379", "")
+
 	e := engine.ConcurrentEngine{
-		Scheduler:        &scheduler.ConcurrentScheduler{},
-		WorkerCount:      100,
-		ItemChan:         itemChan,
-		RequestProcessor: processor,
+		Scheduler:         &scheduler.ConcurrentScheduler{},
+		WorkerCount:       100,
+		ItemChan:          itemChan,
+		RequestProcessor:  processor,
+		RequestDuplicator: duplicator,
 	}
 
 	e.Run(engine.Request{

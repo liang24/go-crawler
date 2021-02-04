@@ -1,13 +1,18 @@
 package engine
 
 type ConcurrentEngine struct {
-	Scheduler        Scheduler
-	WorkerCount      int
-	ItemChan         chan Item
-	RequestProcessor Processor
+	Scheduler         Scheduler
+	WorkerCount       int
+	ItemChan          chan Item
+	RequestProcessor  Processor
+	RequestDuplicator Duplicator
 }
 
 type Processor func(Request) (ParseResult, error)
+
+type Duplicator interface {
+	Duplicate(url string) bool
+}
 
 type Scheduler interface {
 	ReadyNotifier
@@ -39,7 +44,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		}
 
 		for _, request := range result.Requests {
-			if isDuplicate(request.Url) {
+			if e.RequestDuplicator.Duplicate(request.Url) {
 				continue
 			}
 			e.Scheduler.Submit(request)
@@ -59,15 +64,4 @@ func (e *ConcurrentEngine) createWorker(in chan Request, out chan ParseResult, r
 			out <- result
 		}
 	}()
-}
-
-var visited = make(map[string]bool)
-
-func isDuplicate(url string) bool {
-	if visited[url] {
-		return true
-	}
-
-	visited[url] = true
-	return false
 }
